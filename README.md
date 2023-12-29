@@ -25,9 +25,8 @@ use geckoterminal_rs::GeckoTerminal;
 // Get a list of supported networks
 #[tokio::main]
 async fn main() {
-    let res = GeckoTerminalAPI::new()
-        .networks("1")
-        .await;
+    let client = GeckoTerminalAPI::new();
+    let res = client.networks(1).await;
     println!("{:?}", res);
 }
 ```
