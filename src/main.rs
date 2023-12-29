@@ -3,7 +3,7 @@ mod limits;
 mod validation;
 
 #[tokio::main]
-async fn main() -> Result<(), reqwest::Error> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
     let client = api::GeckoTerminalAPI::new();

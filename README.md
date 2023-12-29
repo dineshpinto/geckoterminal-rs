@@ -1,3 +1,6 @@
+![Crates.io Version](https://img.shields.io/crates/v/geckoterminal-rs)
+![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)
+
 # geckoterminal-rs
 
 ## RESTful asynchronous Rust client for GeckoTerminal API
