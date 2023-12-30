@@ -1,5 +1,6 @@
 ![Crates.io Version](https://img.shields.io/crates/v/geckoterminal-rs)
 ![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)
+
 # geckoterminal-rs
 
 ## RESTful asynchronous Rust client for GeckoTerminal API
@@ -22,7 +23,7 @@ geckoterminal-rs = { version = "0.1" }
 ## Usage
 
 ```rust
-use geckoterminal_rs::api::GeckoTerminal;
+use geckoterminal_rs::GeckoTerminalAPI;
 
 #[tokio::main]
 async fn main() {
@@ -39,7 +40,7 @@ async fn main() {
     // Query trending pools on Solana
     let pools = client.network_trending_pools("solana", vec!["base_token", "quote_token", "dex"], 0).await;
     println!("{:?}", pools);
-    
+
     // And many more...
 }
 ```

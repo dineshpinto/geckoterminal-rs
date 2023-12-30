@@ -1,11 +1,10 @@
 use log::error;
 use serde_json::Value;
 
-use crate::validation::{
-    check_addresses,
-    check_include,
-    check_page
-};
+use crate::validation::{check_addresses, check_include, check_page};
+
+pub mod limits;
+pub mod validation;
 
 pub struct GeckoTerminalAPI {
     client: reqwest::Client,
@@ -13,14 +12,23 @@ pub struct GeckoTerminalAPI {
     accept_header: String,
 }
 
-impl GeckoTerminalAPI {
+impl Default for GeckoTerminalAPI {
+    fn default() -> Self {
+        GeckoTerminalAPI {
+            client: reqwest::Client::new(),
+            base_url: "https://api.geckoterminal.com/api/v2".to_string(),
+            accept_header: "application/json".to_string(),
+        }
+    }
+}
 
+impl GeckoTerminalAPI {
     /// Create a new GeckoTerminalAPI client.
     ///
     /// # Examples
     ///
     /// ```
-    /// use geckoterminal_rs::api::GeckoTerminalAPI;
+    /// use geckoterminal_rs::GeckoTerminalAPI;
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -29,17 +37,13 @@ impl GeckoTerminalAPI {
     /// }
     /// ```
     pub fn new() -> GeckoTerminalAPI {
-        GeckoTerminalAPI {
-            client: reqwest::Client::new(),
-            base_url: "https://api.geckoterminal.com/api/v2".to_string(),
-            accept_header: "application/json".to_string(),
-        }
+        Default::default()
     }
 
     /// Make a GET request to the GeckoTerminalAPI.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `path` - The path to make the GET request to.
     /// * `params` - The query parameters to include in the GET request.
     pub async fn get(
@@ -57,9 +61,7 @@ impl GeckoTerminalAPI {
             .await?;
 
         match resp.error_for_status_ref() {
-            Ok(_) => {
-                Ok(resp.json().await?)
-            }
+            Ok(_) => Ok(resp.json().await?),
             Err(err) => {
                 error!("Error: {}", err);
                 Err(err)
@@ -322,7 +324,6 @@ impl GeckoTerminalAPI {
         );
         let params = vec![];
         self.get(path, params).await
-        
     }
 
     /// Get top pools for a token on a network.
@@ -422,7 +423,7 @@ impl GeckoTerminalAPI {
         self.get(path, params).await
     }
 
-    /// Get trades of a pool
+    /// Get trades of a pool on a network.
     ///
     /// # Arguments
     /// * `network` - The network ID of the network to get the trades for.
@@ -440,5 +441,230 @@ impl GeckoTerminalAPI {
             trade_volume_in_usd_greater_than.to_string(),
         )];
         self.get(path, params).await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use more_asserts as ma;
+
+    use super::*;
+
+    #[tokio::test]
+    async fn test_networks() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client.networks(1).await.unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_dexes() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client.network_dexes("eth", 1).await.unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_trending_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .trending_pools(vec!["base_token", "quote_token", "dex", "network"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_trending_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_trending_pools("eth", vec!["base_token", "quote_token", "dex"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_pool_address() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_pool_address(
+                "eth",
+                "0x60594a405d53811d3bc4766596efd80fd545a270",
+                vec!["base_token", "quote_token", "dex"],
+            )
+            .await
+            .unwrap();
+        assert_eq!(
+            resp["data"]["attributes"]["address"],
+            "0x60594a405d53811d3bc4766596efd80fd545a270"
+        );
+    }
+
+    #[tokio::test]
+    async fn test_network_pools_multi_address() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_pools_multi_address(
+                "eth",
+                vec![
+                    "0x60594a405d53811d3bc4766596efd80fd545a270",
+                    "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+                ],
+                vec!["base_token", "quote_token", "dex"],
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"].as_array().unwrap().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn test_network_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_pools("eth", vec!["base_token", "quote_token", "dex"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_dex_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_dex_pools("eth", "sushiswap", vec!["base_token", "quote_token"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_new_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_new_pools("eth", vec!["base_token", "quote_token", "dex"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_new_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .new_pools(vec!["base_token", "quote_token", "dex", "network"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_search_network_pool() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .search_network_pool("ETH", "eth", vec!["base_token", "quote_token", "dex"], 1)
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_addresses_token_price() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_addresses_token_price(
+                "eth",
+                vec![
+                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                ],
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"]["type"], "simple_token_price");
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn test_network_token_pools() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_token_pools(
+                "eth",
+                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                vec!["base_token", "quote_token", "dex"],
+                1
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"].as_array().unwrap().len(), 1);
+    }
+
+    #[tokio::test]
+    async fn test_network_token() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_token(
+                "eth",
+                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                vec!["top_pools"]
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"]["attributes"]["address"], "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+    }
+
+    #[tokio::test]
+    async fn test_network_token_multi_address() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_token_multi_address(
+                "eth",
+                vec![
+                    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                ],
+                vec!["top_pools"]
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"].as_array().unwrap().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn test_network_tokens_address_info() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_tokens_address_info(
+                "eth",
+                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"]["attributes"]["address"], "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+    }
+
+    #[tokio::test]
+    async fn test_token_info_recently_updated() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .token_info_recently_updated(vec!["network"])
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+    }
+
+    #[tokio::test]
+    async fn test_network_pool_trades() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_pool_trades(
+                "eth",
+                "0x60594a405d53811d3bc4766596efd80fd545a270",
+                1000.0
+            )
+            .await
+            .unwrap();
+        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 100);
     }
 }
