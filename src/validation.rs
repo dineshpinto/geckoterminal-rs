@@ -1,16 +1,23 @@
-use log::warn;
+use log::{error, warn};
 
-use crate::limits::{NETWORK_POOL_INCLUDES, POOL_INCLUDES, TOKEN_INCLUDES, TOKEN_INCLUDES_INFO};
+use crate::limits::{
+    MAX_ADDRESSES,
+    MAX_PAGE,
+    NETWORK_POOL_INCLUDES,
+    POOL_INCLUDES,
+    TOKEN_INCLUDES,
+    TOKEN_INCLUDES_INFO
+};
 
-pub fn check_page(page: &i32, max_page: i32) {
-    if page > &max_page {
-        warn!("page must be less than {}", max_page)
+pub fn check_page(page: &i32) {
+    if page > &MAX_PAGE {
+        warn!("page must be less than {}", MAX_PAGE)
     }
 }
 
-pub fn check_addresses(addresses: &Vec<&str>, max_addresses: i32) {
-    if addresses.len() as i32 > max_addresses {
-        warn!("addresses must be less than {}", max_addresses)
+pub fn check_addresses(addresses: &Vec<&str>) {
+    if addresses.len() as i32 > MAX_ADDRESSES {
+        warn!("addresses must be less than {}", MAX_ADDRESSES)
     }
 }
 
@@ -44,6 +51,6 @@ pub fn check_include(include: &Vec<&str>, include_type: &str) {
                 }
             }
         },
-        _ => panic!("invalid include type")
+        _ => error!("invalid include type {}", include_type)
     };
 }
