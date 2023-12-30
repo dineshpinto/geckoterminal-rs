@@ -2,6 +2,7 @@
 [![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)](https://crates.io/crates/geckoterminal-rs)
 [![Rust](https://github.com/dineshpinto/geckoterminal-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/dineshpinto/geckoterminal-rs/actions/workflows/rust.yml)
 [![codecov](https://codecov.io/gh/dineshpinto/geckoterminal-rs/graph/badge.svg?token=OW7EKB0PXW)](https://codecov.io/gh/dineshpinto/geckoterminal-rs)
+
 # geckoterminal-rs
 
 ## RESTful asynchronous Rust client for GeckoTerminal API
@@ -21,6 +22,11 @@ Your `Cargo.toml` could look like this:
 geckoterminal-rs = { version = "0.1" }
 ```
 
+## Docs
+
+See the [GeckoTerminal API docs](https://www.geckoterminal.com/dex-api) for more
+details.
+
 ## Usage
 
 ```rust
@@ -39,7 +45,7 @@ async fn main() {
     println!("{:?}", trades);
 
     // Query trending pools on Solana
-    let pools = client.network_trending_pools("solana", vec!["base_token", "quote_token", "dex"], 0).await;
+    let pools = client.network_trending_pools("solana", vec!["base_token", "quote_token", "dex"], 1).await;
     println!("{:?}", pools);
 
     // And many more...
