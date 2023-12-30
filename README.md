@@ -1,6 +1,5 @@
 ![Crates.io Version](https://img.shields.io/crates/v/geckoterminal-rs)
 ![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)
-
 # geckoterminal-rs
 
 ## RESTful asynchronous Rust client for GeckoTerminal API
@@ -23,13 +22,37 @@ geckoterminal-rs = { version = "0.1" }
 ## Usage
 
 ```rust
-use geckoterminal_rs::GeckoTerminal;
+use geckoterminal_rs::api::GeckoTerminal;
 
-// Get a list of supported networks
 #[tokio::main]
 async fn main() {
     let client = GeckoTerminalAPI::new();
-    let res = client.networks(1).await;
-    println!("{:?}", res);
+
+    // Get a list of supported networks
+    let networks = client.networks(1).await;
+    println!("{:?}", networks);
+
+    // Query $ANALOS pool trades on Solana
+    let trades = client.network_pool_trades("solana", "69grLw4PcSypZnn3xpsozCJFT8vs8WA5817VUVnzNGTh", 0).await;
+    println!("{:?}", trades);
+
+    // Query trending pools on Solana
+    let pools = client.network_trending_pools("solana", vec!["base_token", "quote_token", "dex"], 0).await;
+    println!("{:?}", pools);
+    
+    // And many more...
 }
 ```
+
+## Disclaimer
+
+This project is for educational purposes only. You should not construe any such
+information or other material as legal, tax, investment, financial, or other advice.
+Nothing contained here constitutes a solicitation, recommendation, endorsement, or
+offer by me or any third party service provider to buy or sell any securities or other
+financial instruments in this or in any other jurisdiction in which such solicitation or
+offer would be unlawful under the securities laws of such jurisdiction.
+
+Under no circumstances will I be held responsible or liable in any way for any claims,
+damages, losses, expenses, costs, or liabilities whatsoever, including, without
+limitation, any direct or indirect damages for loss of profits.
