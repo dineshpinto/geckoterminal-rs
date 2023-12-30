@@ -1,7 +1,16 @@
 use log::error;
 use serde_json::Value;
 
-use crate::validation::{check_addresses, check_include, check_page};
+use crate::validation::{
+    check_addresses,
+    check_aggregate,
+    check_currency,
+    check_include,
+    check_ohlcv_limit,
+    check_page,
+    check_timeframe,
+    check_token
+};
 
 pub mod limits;
 pub mod validation;
@@ -442,6 +451,34 @@ impl GeckoTerminalAPI {
         )];
         self.get(path, params).await
     }
+
+    #[allow(clippy::too_many_arguments)]
+    pub async fn network_pool_ohlcv(
+        &self,
+        network: &str,
+        pool_address: &str,
+        timeframe: &str,
+        aggregate: i32,
+        before_timestamp: i32,
+        limit: i32,
+        currency: &str,
+        token: &str,
+    ) -> Result<Value, reqwest::Error> {
+        check_timeframe(timeframe);
+        check_aggregate(&aggregate, timeframe);
+        check_ohlcv_limit(&limit);
+        check_currency(currency);
+        check_token(token);
+        let path = format!("/networks/{}/pools/{}/ohlcv/{}", network, pool_address, timeframe);
+        let params = vec![
+            ("aggregate".to_string(), aggregate.to_string()),
+            ("before_timestamp".to_string(), before_timestamp.to_string()),
+            ("limit".to_string(), limit.to_string()),
+            ("currency".to_string(), currency.to_string()),
+            ("token".to_string(), token.to_string()),
+        ];
+        self.get(path, params).await
+    }
 }
 
 #[cfg(test)]
@@ -666,5 +703,24 @@ mod tests {
             .await
             .unwrap();
         ma::assert_gt!(resp["data"].as_array().unwrap().len(), 100);
+    }
+
+    #[tokio::test]
+    async fn test_network_pool_ohlcv() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client
+            .network_pool_ohlcv(
+                "eth",
+                "0x60594a405d53811d3bc4766596efd80fd545a270",
+                "day",
+                1,
+                1703916869,
+                100,
+                "usd",
+                "base"
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp["data"]["attributes"]["ohlcv_list"].as_array().unwrap().len(), 100);
     }
 }

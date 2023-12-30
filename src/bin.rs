@@ -85,5 +85,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .network_pool_trades("eth", "0x60594a405d53811d3bc4766596efd80fd545a270", 1000.0)
         .await;
 
+    let _ = client
+        .network_pool_ohlcv(
+            "eth",
+            "0x60594a405d53811d3bc4766596efd80fd545a270",
+            "day",
+            1,
+            1703916869,
+            100,
+            "usd",
+            "base",
+        )
+        .await;
+
     Ok(())
 }
