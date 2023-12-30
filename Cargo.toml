@@ -12,10 +12,6 @@ keywords = ["geckoterminal", "rest", "api", "async", "crypto"]
 name = "geckoterminal_rs"
 path = "src/lib.rs"
 
-[[bin]]
-name = "geckoterminal_rs"
-path = "src/bin.rs"
-
 [dependencies]
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }

@@ -1,6 +1,7 @@
 [![Crates.io Version](https://img.shields.io/crates/v/geckoterminal-rs)](https://crates.io/crates/geckoterminal-rs)
 [![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)](https://crates.io/crates/geckoterminal-rs)
-
+[![Rust](https://github.com/dineshpinto/geckoterminal-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/dineshpinto/geckoterminal-rs/actions/workflows/rust.yml)
+[![codecov](https://codecov.io/gh/dineshpinto/geckoterminal-rs/graph/badge.svg?token=OW7EKB0PXW)](https://codecov.io/gh/dineshpinto/geckoterminal-rs)
 # geckoterminal-rs
 
 ## RESTful asynchronous Rust client for GeckoTerminal API
