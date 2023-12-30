@@ -544,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "geckoterminal-rs"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "cargo-tarpaulin",
  "env_logger",
