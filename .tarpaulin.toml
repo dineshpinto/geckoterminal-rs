@@ -1,0 +1,6 @@
+[tarpaulin_config]
+engine = "Llvm"
+no-dead-code = true
+
+[report]
+out = [ "Xml" ]

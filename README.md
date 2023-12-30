@@ -1,5 +1,5 @@
-![Crates.io Version](https://img.shields.io/crates/v/geckoterminal-rs)
-![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)
+[![Crates.io Version](https://img.shields.io/crates/v/geckoterminal-rs)](https://crates.io/crates/geckoterminal-rs)
+[![Crates.io Total Downloads](https://img.shields.io/crates/d/geckoterminal-rs)](https://crates.io/crates/geckoterminal-rs)
 
 # geckoterminal-rs
 
