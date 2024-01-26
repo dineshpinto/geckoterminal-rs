@@ -1,17 +1,7 @@
 use crate::limits::{
-    CURRENCIES,
-    DAY_AGGREGATES,
-    HOUR_AGGREGATES,
-    MAX_ADDRESSES,
-    MAX_PAGE,
-    MINUTE_AGGREGATES,
-    NETWORK_POOL_INCLUDES,
-    OHLCV_LIMIT,
-    POOL_INCLUDES,
-    TIMEFRAMES,
-    TOKEN_INCLUDES,
+    CURRENCIES, DAY_AGGREGATES, HOUR_AGGREGATES, MAX_ADDRESSES, MAX_PAGE, MINUTE_AGGREGATES,
+    NETWORK_POOL_INCLUDES, OHLCV_LIMIT, POOL_INCLUDES, TIMEFRAMES, TOKENS, TOKEN_INCLUDES,
     TOKEN_INCLUDES_INFO,
-    TOKENS
 };
 
 pub fn check_page(page: &i32) {
@@ -34,29 +24,29 @@ pub fn check_include(include: &Vec<&str>, include_type: &str) {
                     log::warn!("{} not in {:?}", i, POOL_INCLUDES)
                 }
             }
-        },
+        }
         "network_pool" => {
             for i in include {
                 if !NETWORK_POOL_INCLUDES.contains(i) {
                     log::warn!("{} not in {:?}", i, NETWORK_POOL_INCLUDES)
                 }
             }
-        },
+        }
         "token" => {
             for i in include {
                 if !TOKEN_INCLUDES.contains(i) {
                     log::warn!("{} not in {:?}", i, TOKEN_INCLUDES)
                 }
             }
-        },
+        }
         "token_info" => {
             for i in include {
                 if !TOKEN_INCLUDES_INFO.contains(i) {
                     log::warn!("{} not in {:?}", i, TOKEN_INCLUDES_INFO)
                 }
             }
-        },
-        _ => log::error!("invalid include type {}", include_type)
+        }
+        _ => log::error!("invalid include type {}", include_type),
     };
 }
 
@@ -72,18 +62,18 @@ pub fn check_aggregate(aggregate: &i32, timeframe: &str) {
             if !DAY_AGGREGATES.contains(aggregate) {
                 log::warn!("aggregate not in {:?}", DAY_AGGREGATES)
             }
-        },
+        }
         "hour" => {
             if !HOUR_AGGREGATES.contains(aggregate) {
                 log::warn!("aggregate not in {:?}", HOUR_AGGREGATES)
             }
-        },
+        }
         "minute" => {
             if !MINUTE_AGGREGATES.contains(aggregate) {
                 log::warn!("aggregate not in {:?}", MINUTE_AGGREGATES)
             }
-        },
-        _ => log::error!("invalid timeframe {}", timeframe)
+        }
+        _ => log::error!("invalid timeframe {}", timeframe),
     };
 }
 

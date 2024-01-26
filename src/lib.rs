@@ -1,12 +1,6 @@
 use crate::validation::{
-    check_addresses,
-    check_aggregate,
-    check_currency,
-    check_include,
-    check_ohlcv_limit,
-    check_page,
-    check_timeframe,
-    check_token
+    check_addresses, check_aggregate, check_currency, check_include, check_ohlcv_limit, check_page,
+    check_timeframe, check_token,
 };
 
 pub mod limits;
@@ -93,7 +87,11 @@ impl GeckoTerminalAPI {
     ///
     /// * `network` - The network ID of the network to get DEXes for.
     /// * `page` - The page number of the results to return. Default is 1.
-    pub async fn network_dexes(&self, network: &str, page: i32) -> Result<serde_json::Value, reqwest::Error> {
+    pub async fn network_dexes(
+        &self,
+        network: &str,
+        page: i32,
+    ) -> Result<serde_json::Value, reqwest::Error> {
         check_page(&page);
         let path = format!("/networks/{}/dexes", network);
         let params = vec![("page".to_string(), page.to_string())];
@@ -272,7 +270,11 @@ impl GeckoTerminalAPI {
     /// * `include` - List of related resources to include in response. Available
     /// resources are: base_token, quote_token, dex, network (default all).
     /// * `page` - The page number of the results to return. Default is 1.
-    pub async fn new_pools(&self, include: Vec<&str>, page: i32) -> Result<serde_json::Value, reqwest::Error> {
+    pub async fn new_pools(
+        &self,
+        include: Vec<&str>,
+        page: i32,
+    ) -> Result<serde_json::Value, reqwest::Error> {
         check_include(&include, "pool");
         check_page(&page);
         let path = "/networks/new_pools".to_string();
@@ -466,7 +468,10 @@ impl GeckoTerminalAPI {
         check_ohlcv_limit(&limit);
         check_currency(currency);
         check_token(token);
-        let path = format!("/networks/{}/pools/{}/ohlcv/{}", network, pool_address, timeframe);
+        let path = format!(
+            "/networks/{}/pools/{}/ohlcv/{}",
+            network, pool_address, timeframe
+        );
         let params = vec![
             ("aggregate".to_string(), aggregate.to_string()),
             ("before_timestamp".to_string(), before_timestamp.to_string()),
@@ -626,7 +631,7 @@ mod tests {
                 "eth",
                 "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
                 vec!["base_token", "quote_token", "dex"],
-                1
+                1,
             )
             .await
             .unwrap();
@@ -640,11 +645,14 @@ mod tests {
             .network_token(
                 "eth",
                 "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-                vec!["top_pools"]
+                vec!["top_pools"],
             )
             .await
             .unwrap();
-        assert_eq!(resp["data"]["attributes"]["address"], "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+        assert_eq!(
+            resp["data"]["attributes"]["address"],
+            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        );
     }
 
     #[tokio::test]
@@ -655,9 +663,9 @@ mod tests {
                 "eth",
                 vec![
                     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
                 ],
-                vec!["top_pools"]
+                vec!["top_pools"],
             )
             .await
             .unwrap();
@@ -668,13 +676,13 @@ mod tests {
     async fn test_network_tokens_address_info() {
         let client = GeckoTerminalAPI::new();
         let resp = client
-            .network_tokens_address_info(
-                "eth",
-                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-            )
+            .network_tokens_address_info("eth", "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")
             .await
             .unwrap();
-        assert_eq!(resp["data"]["attributes"]["address"], "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+        assert_eq!(
+            resp["data"]["attributes"]["address"],
+            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        );
     }
 
     #[tokio::test]
@@ -691,11 +699,7 @@ mod tests {
     async fn test_network_pool_trades() {
         let client = GeckoTerminalAPI::new();
         let resp = client
-            .network_pool_trades(
-                "eth",
-                "0x60594a405d53811d3bc4766596efd80fd545a270",
-                1000.0
-            )
+            .network_pool_trades("eth", "0x60594a405d53811d3bc4766596efd80fd545a270", 1000.0)
             .await
             .unwrap();
         ma::assert_gt!(resp["data"].as_array().unwrap().len(), 100);
@@ -713,10 +717,16 @@ mod tests {
                 1703916869,
                 100,
                 "usd",
-                "base"
+                "base",
             )
             .await
             .unwrap();
-        assert_eq!(resp["data"]["attributes"]["ohlcv_list"].as_array().unwrap().len(), 100);
+        assert_eq!(
+            resp["data"]["attributes"]["ohlcv_list"]
+                .as_array()
+                .unwrap()
+                .len(),
+            100
+        );
     }
 }
