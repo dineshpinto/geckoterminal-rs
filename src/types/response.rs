@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Links {
     pub first: String,
     pub last: String,
@@ -8,7 +8,7 @@ pub struct Links {
     pub next: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Base {
     pub address: String,
     pub name: String,
@@ -16,7 +16,7 @@ pub struct Base {
     pub coingecko_coin_id: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Quote {
     pub address: String,
     pub name: String,
@@ -24,7 +24,7 @@ pub struct Quote {
     pub coingecko_coin_id: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Meta {
     pub base: Base,
     pub quote: Quote,
@@ -48,7 +48,7 @@ pub struct Attributes {
     pub coingecko_asset_platform_id: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GeckoTerminalResponse<T> {
     pub data: T,
     pub links: Option<Links>,
