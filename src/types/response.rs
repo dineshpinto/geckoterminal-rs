@@ -13,7 +13,7 @@ pub struct Base {
     pub address: String,
     pub name: String,
     pub symbol: String,
-    pub coingecko_coin_id: i32,
+    pub coingecko_coin_id: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -21,7 +21,7 @@ pub struct Quote {
     pub address: String,
     pub name: String,
     pub symbol: String,
-    pub coingecko_coin_id: i32,
+    pub coingecko_coin_id: String,
 }
 
 #[derive(Serialize, Deserialize)]

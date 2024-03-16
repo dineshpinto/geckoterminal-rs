@@ -1,7 +1,7 @@
 use crate::limits::{
     CURRENCIES, DAY_AGGREGATES, HOUR_AGGREGATES, MAX_ADDRESSES, MAX_PAGE, MINUTE_AGGREGATES,
-    NETWORK_POOL_INCLUDES, OHLCV_LIMIT, POOL_INCLUDES, TIMEFRAMES, TOKENS, TOKEN_INCLUDES,
-    TOKEN_INCLUDES_INFO,
+    NETWORK_POOL_INCLUDES, OHLCV_LIMIT, POOL_INCLUDES, TIMEFRAMES, TOKEN_INCLUDES, TOKEN_INCLUDES_INFO,
+    TOKENS,
 };
 
 pub fn check_page(page: &i32) {
@@ -14,40 +14,6 @@ pub fn check_addresses(addresses: &Vec<&str>) {
     if addresses.len() as i32 > MAX_ADDRESSES {
         log::warn!("addresses must be less than {}", MAX_ADDRESSES)
     }
-}
-
-pub fn check_include(include: &Vec<&str>, include_type: &str) {
-    match include_type {
-        "pool" => {
-            for i in include {
-                if !POOL_INCLUDES.contains(i) {
-                    log::warn!("{} not in {:?}", i, POOL_INCLUDES)
-                }
-            }
-        }
-        "network_pool" => {
-            for i in include {
-                if !NETWORK_POOL_INCLUDES.contains(i) {
-                    log::warn!("{} not in {:?}", i, NETWORK_POOL_INCLUDES)
-                }
-            }
-        }
-        "token" => {
-            for i in include {
-                if !TOKEN_INCLUDES.contains(i) {
-                    log::warn!("{} not in {:?}", i, TOKEN_INCLUDES)
-                }
-            }
-        }
-        "token_info" => {
-            for i in include {
-                if !TOKEN_INCLUDES_INFO.contains(i) {
-                    log::warn!("{} not in {:?}", i, TOKEN_INCLUDES_INFO)
-                }
-            }
-        }
-        _ => log::error!("invalid include type {}", include_type),
-    };
 }
 
 pub fn check_timeframe(timeframe: &str) {

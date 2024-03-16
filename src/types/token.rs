@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Token {
@@ -22,7 +23,7 @@ pub struct Attributes {
     pub fdv_usd: String,
     pub total_reserve_in_usd: String,
     pub volume_usd: VolumeUsd,
-    pub market_cap_usd: String,
+    pub market_cap_usd: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -69,7 +70,7 @@ pub struct Attributes2 {
     pub pool_created_at: String,
     pub token_price_usd: String,
     pub fdv_usd: String,
-    pub market_cap_usd: String,
+    pub market_cap_usd: Value,
     pub price_change_percentage: PriceChangePercentage,
     pub transactions: Transactions,
     pub volume_usd: VolumeUsd2,

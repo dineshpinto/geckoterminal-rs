@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::types::{Dex, GeckoTerminalResponse, Network, Pool, Token, TokenPrice};
+use crate::types::{Dex, GeckoTerminalResponse, Network, OHLCV, Pool, Token, TokenInfo, TokenPrice, Trade};
 use crate::validation::{
-    check_addresses, check_aggregate, check_currency, check_include, check_ohlcv_limit, check_page,
+    check_addresses, check_aggregate, check_currency, check_ohlcv_limit, check_page,
     check_timeframe, check_token,
 };
 
@@ -378,7 +378,7 @@ impl GeckoTerminalAPI {
         resp.json::<GeckoTerminalResponse<Token>>().await
     }
 
-    /*
+
     /// Get multiple tokens on a network.
     ///
     /// # Arguments
@@ -390,14 +390,13 @@ impl GeckoTerminalAPI {
         &self,
         network: &str,
         addresses: Vec<&str>,
-        include: Vec<&str>,
-    ) -> Result<serde_json::Value, reqwest::Error> {
+    ) -> Result<GeckoTerminalResponse<Vec<Token>>, reqwest::Error> {
         check_addresses(&addresses);
-        check_include(&include, "token");
         let path = format!("/networks/{}/tokens/multi/{}", network, addresses.join(","));
-        let include_str = include.join(",");
+        let include_str = ["top_pools"].join(",");
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params).await
+        let resp = self.get(path, params).await?;
+        resp.json::<GeckoTerminalResponse<Vec<Token>>>().await
     }
 
     /// Get token address info on a network.
@@ -409,11 +408,13 @@ impl GeckoTerminalAPI {
         &self,
         network: &str,
         address: &str,
-    ) -> Result<serde_json::Value, reqwest::Error> {
+    ) -> Result<GeckoTerminalResponse<TokenInfo>, reqwest::Error> {
         let path = format!("/networks/{}/tokens/{}/info", network, address);
         let params = vec![];
-        self.get(path, params).await
+        let resp = self.get(path, params).await?;
+        resp.json::<GeckoTerminalResponse<TokenInfo>>().await
     }
+
 
     /// Get most recently updated 100 tokens info from all networks.
     ///
@@ -422,13 +423,12 @@ impl GeckoTerminalAPI {
     /// resources are: network (default all).
     pub async fn token_info_recently_updated(
         &self,
-        include: Vec<&str>,
-    ) -> Result<serde_json::Value, reqwest::Error> {
-        check_include(&include, "token_info");
+    ) -> Result<GeckoTerminalResponse<Vec<TokenInfo>>, reqwest::Error> {
         let path = "/tokens/info_recently_updated".to_string();
-        let include_str = include.join(",");
+        let include_str = ["network"].join(",");
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params).await
+        let resp = self.get(path, params).await?;
+        resp.json::<GeckoTerminalResponse<Vec<TokenInfo>>>().await
     }
 
     /// Get trades of a pool on a network.
@@ -442,13 +442,14 @@ impl GeckoTerminalAPI {
         network: &str,
         pool_address: &str,
         trade_volume_in_usd_greater_than: f64,
-    ) -> Result<serde_json::Value, reqwest::Error> {
+    ) -> Result<GeckoTerminalResponse<Vec<Trade>>, reqwest::Error> {
         let path = format!("/networks/{}/pools/{}/trades", network, pool_address);
         let params = vec![(
             "trade_volume_in_usd_greater_than".to_string(),
             trade_volume_in_usd_greater_than.to_string(),
         )];
-        self.get(path, params).await
+        let resp = self.get(path, params).await?;
+        resp.json::<GeckoTerminalResponse<Vec<Trade>>>().await
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -457,17 +458,24 @@ impl GeckoTerminalAPI {
         network: &str,
         pool_address: &str,
         timeframe: &str,
-        aggregate: i32,
-        before_timestamp: i32,
-        limit: i32,
-        currency: &str,
-        token: &str,
-    ) -> Result<serde_json::Value, reqwest::Error> {
+        aggregate: Option<i32>,
+        before_timestamp: Option<u64>,
+        limit: Option<i32>,
+        currency: Option<&str>,
+        token: Option<&str>,
+    ) -> Result<GeckoTerminalResponse<OHLCV>, reqwest::Error> {
+        let aggregate = aggregate.unwrap_or(1);
+        let before_timestamp = before_timestamp.unwrap_or(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs());
+        let limit = limit.unwrap_or(100);
+        let currency = currency.unwrap_or("usd");
+        let token = token.unwrap_or("base");
+        
         check_timeframe(timeframe);
         check_aggregate(&aggregate, timeframe);
         check_ohlcv_limit(&limit);
         check_currency(currency);
         check_token(token);
+        
         let path = format!(
             "/networks/{}/pools/{}/ohlcv/{}",
             network, pool_address, timeframe
@@ -479,8 +487,9 @@ impl GeckoTerminalAPI {
             ("currency".to_string(), currency.to_string()),
             ("token".to_string(), token.to_string()),
         ];
-        self.get(path, params).await
-    }*/
+        let resp = self.get(path, params).await?;
+        resp.json::<GeckoTerminalResponse<OHLCV>>().await
+    }
 }
 
 #[cfg(test)]
@@ -636,7 +645,7 @@ mod tests {
         assert_eq!(resp.data.type_field, "token")
     }
 
-    /*
+
     #[tokio::test]
     async fn test_network_token_multi_address() {
         let client = GeckoTerminalAPI::new();
@@ -650,7 +659,8 @@ mod tests {
             )
             .await
             .unwrap();
-        assert_eq!(resp.da.len(), 2);
+        assert_eq!(resp.data.len(), 2);
+        assert_eq!(resp.data[0].type_field, "token");
     }
 
     #[tokio::test]
@@ -661,19 +671,21 @@ mod tests {
             .await
             .unwrap();
         assert_eq!(
-            resp["data"]["attributes"]["address"],
+            resp.data.attributes.address,
             "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         );
+        assert_eq!(resp.data.type_field, "token")
     }
 
     #[tokio::test]
     async fn test_token_info_recently_updated() {
         let client = GeckoTerminalAPI::new();
         let resp = client
-            .token_info_recently_updated(vec!["network"])
+            .token_info_recently_updated()
             .await
             .unwrap();
-        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 10);
+        ma::assert_gt!(resp.data.len(), 10);
+        assert_eq!(resp.data[0].type_field, "token");
     }
 
     #[tokio::test]
@@ -683,9 +695,10 @@ mod tests {
             .network_pool_trades("eth", "0x60594a405d53811d3bc4766596efd80fd545a270", 1000.0)
             .await
             .unwrap();
-        ma::assert_gt!(resp["data"].as_array().unwrap().len(), 100);
+        ma::assert_gt!(resp.data.len(), 100);
+        assert_eq!(resp.data[0].type_field, "trade");
     }
-
+    
     #[tokio::test]
     async fn test_network_pool_ohlcv() {
         let client = GeckoTerminalAPI::new();
@@ -694,21 +707,19 @@ mod tests {
                 "eth",
                 "0x60594a405d53811d3bc4766596efd80fd545a270",
                 "day",
-                1,
-                1703916869,
-                100,
-                "usd",
-                "base",
+                None,
+                None,
+                None,
+                None,
+                None,
             )
             .await
             .unwrap();
         assert_eq!(
-            resp["data"]["attributes"]["ohlcv_list"]
-                .as_array()
-                .unwrap()
-                .len(),
-            100
+            resp.data.type_field, "ohlcv_request_response"
+        );
+        assert_eq!(
+            resp.data.attributes.ohlcv_list.len(), 100
         );
     }
-     */
 }
