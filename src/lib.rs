@@ -1,6 +1,8 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::types::{Dex, GeckoTerminalResponse, Network, OHLCV, Pool, Token, TokenInfo, TokenPrice, Trade};
+use crate::types::{
+    Dex, GeckoTerminalResponse, Network, Pool, Token, TokenInfo, TokenPrice, Trade, OHLCV,
+};
 use crate::validation::{
     check_addresses, check_aggregate, check_currency, check_ohlcv_limit, check_page,
     check_timeframe, check_token,
@@ -378,7 +380,6 @@ impl GeckoTerminalAPI {
         resp.json::<GeckoTerminalResponse<Token>>().await
     }
 
-
     /// Get multiple tokens on a network.
     ///
     /// # Arguments
@@ -414,7 +415,6 @@ impl GeckoTerminalAPI {
         let resp = self.get(path, params).await?;
         resp.json::<GeckoTerminalResponse<TokenInfo>>().await
     }
-
 
     /// Get most recently updated 100 tokens info from all networks.
     ///
@@ -465,17 +465,22 @@ impl GeckoTerminalAPI {
         token: Option<&str>,
     ) -> Result<GeckoTerminalResponse<OHLCV>, reqwest::Error> {
         let aggregate = aggregate.unwrap_or(1);
-        let before_timestamp = before_timestamp.unwrap_or(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs());
+        let before_timestamp = before_timestamp.unwrap_or(
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
+        );
         let limit = limit.unwrap_or(100);
         let currency = currency.unwrap_or("usd");
         let token = token.unwrap_or("base");
-        
+
         check_timeframe(timeframe);
         check_aggregate(&aggregate, timeframe);
         check_ohlcv_limit(&limit);
         check_currency(currency);
         check_token(token);
-        
+
         let path = format!(
             "/networks/{}/pools/{}/ohlcv/{}",
             network, pool_address, timeframe
@@ -645,7 +650,6 @@ mod tests {
         assert_eq!(resp.data.type_field, "token")
     }
 
-
     #[tokio::test]
     async fn test_network_token_multi_address() {
         let client = GeckoTerminalAPI::new();
@@ -680,10 +684,7 @@ mod tests {
     #[tokio::test]
     async fn test_token_info_recently_updated() {
         let client = GeckoTerminalAPI::new();
-        let resp = client
-            .token_info_recently_updated()
-            .await
-            .unwrap();
+        let resp = client.token_info_recently_updated().await.unwrap();
         ma::assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "token");
     }
@@ -698,7 +699,7 @@ mod tests {
         ma::assert_gt!(resp.data.len(), 100);
         assert_eq!(resp.data[0].type_field, "trade");
     }
-    
+
     #[tokio::test]
     async fn test_network_pool_ohlcv() {
         let client = GeckoTerminalAPI::new();
@@ -715,11 +716,7 @@ mod tests {
             )
             .await
             .unwrap();
-        assert_eq!(
-            resp.data.type_field, "ohlcv_request_response"
-        );
-        assert_eq!(
-            resp.data.attributes.ohlcv_list.len(), 100
-        );
+        assert_eq!(resp.data.type_field, "ohlcv_request_response");
+        assert_eq!(resp.data.attributes.ohlcv_list.len(), 100);
     }
 }

@@ -19,6 +19,10 @@ jobs:
         run: cargo install cargo-tarpaulin
       - name: Test API
         run: cargo tarpaulin
+      - name: Format and Lint
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --all-targets --all-features -- -D warnings
       - name: Upload to Codecov
         uses: codecov/codecov-action@v3
         with:
