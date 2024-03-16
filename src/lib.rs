@@ -452,6 +452,17 @@ impl GeckoTerminalAPI {
         resp.json::<GeckoTerminalResponse<Vec<Trade>>>().await
     }
 
+    /// Fetches the OHLCV (Open, High, Low, Close, Volume) data for a specific pool on a network.
+    ///
+    /// # Arguments
+    /// * `network` - The network ID of the network to get the OHLCV data for.
+    /// * `pool_address` - The address of the pool to get the OHLCV data for.
+    /// * `timeframe` - The timeframe for the OHLCV data. This can be "day", "hour", etc.
+    /// * `aggregate` - The aggregate parameter for the OHLCV data. This is optional and defaults to 1.
+    /// * `before_timestamp` - The timestamp before which the OHLCV data should be fetched. This is optional and defaults to the current timestamp.
+    /// * `limit` - The limit on the number of OHLCV data points to fetch. This is optional and defaults to 100.
+    /// * `currency` - The currency in which the OHLCV data should be fetched. This is optional and defaults to "usd".
+    /// * `token` - The token for which the OHLCV data should be fetched. This is optional and defaults to "base".
     #[allow(clippy::too_many_arguments)]
     pub async fn network_pool_ohlcv(
         &self,

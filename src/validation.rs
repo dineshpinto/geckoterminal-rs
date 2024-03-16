@@ -9,7 +9,7 @@ pub fn check_page(page: &i32) {
     }
 }
 
-pub fn check_addresses(addresses: &Vec<&str>) {
+pub fn check_addresses(addresses: &[&str]) {
     if addresses.len() as i32 > MAX_ADDRESSES {
         log::warn!("addresses must be less than {}", MAX_ADDRESSES)
     }
