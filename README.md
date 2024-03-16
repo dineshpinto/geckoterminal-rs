@@ -29,7 +29,7 @@ or via `Cargo.toml`:
 
 ```toml
 [dependencies]
-geckoterminal-rs = { version = "0.2" }
+geckoterminal-rs = "0.2"
 ```
 
 ## Docs
@@ -47,11 +47,11 @@ async fn main() {
     let gt = GeckoTerminalAPI::new();
 
     // Get a list of supported networks
-    let networks = client.networks(1).await.unwrap();
+    let networks = gt.networks(1).await.unwrap();
     println!("{:?}", networks);
 
     // Query trending pools on a network
-    let pools = client.network_trending_pools("solana", 1).await.unwrap();
+    let pools = gt.network_trending_pools("solana", 1).await.unwrap();
     println!("{:?}", pools);
 
     // and many more...
@@ -65,10 +65,12 @@ async fn main() {
 ```rust
 let networks = gt.networks(1).await.unwrap();
 for network in networks.data {
-println!("{} ({}, {})", network.attributes.name, network.id,
+    println!("{} ({}, {})", network.attributes.name, network.id,
          network.attributes.coingecko_asset_platform_id.unwrap_or("".to_string()));
 }
 ```
+
+Output:
 
 ```text
 Ethereum: (eth, ethereum)
@@ -77,6 +79,7 @@ Arbitrum: (arbitrum, arbitrum-one)
 Polygon POS: (polygon_pos, polygon-pos)
 Avalanche: (avax, avalanche)
 Mantle: (mantle, mantle)
+...
 ```
 
 ### Get list of trending pools on a network
@@ -86,9 +89,11 @@ let trending = gt.network_trending_pools("solana", 1).await.unwrap();
 for pool in trending.data {
     println!("{}: ${} (24H: {}%), Vol: {}, {} ({})",
              pool.attributes.name, pool.attributes.base_token_price_usd, pool.attributes.price_change_percentage.h24,
-        pool.attributes.volume_usd.h24, pool.attributes.address, pool.relationships.dex.data.id)
+            pool.attributes.volume_usd.h24, pool.attributes.address, pool.relationships.dex.data.id)
 }
 ```
+
+Output:
 
 ```text
 MONKEY / SOL: $0.0000000021245208116085 (24H: 181.76%), Vol: 315625.360191837, Dqb7bL7MZkuDgHrZZphRMRViJnepHxf9odx3RRwmifur (raydium)
@@ -100,7 +105,7 @@ NINJA / SOL: $0.014017222386801 (24H: 0.85%), Vol: 2734212.42346667, B8sv1wiDf9V
 IQ50 / SOL: $0.000091945701104404 (24H: 77.65%), Vol: 31955796.5143891, AFCHx2PfKB8Szn6196kcrHtbwP7zmi5ijMcJfurq1owv (orca)
 boden / SOL: $0.115666833387918 (24H: -25.42%), Vol: 4656209.62137547, 6UYbX1x8YUcFj8YstPYiZByG7uQzAq2s46ZWphUMkjg5 (raydium)
 $WIF / SOL: $2.58524513809515 (24H: -7.83%), Vol: 25117725.2604335, EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx (raydium)
-
+...
 ```
 ## Disclaimer
 
