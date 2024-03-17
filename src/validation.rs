@@ -72,21 +72,23 @@ mod tests {
 
     #[test]
     fn test_check_addresses() {
-        let addresses = ["0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7", "0x8", "0x9", "0x10"];
+        let addresses = [
+            "0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7", "0x8", "0x9", "0x10",
+        ];
         check_addresses(&addresses);
     }
 
     #[test]
     fn test_check_timeframe() {
         let timeframe = "week";
-        check_timeframe(&timeframe);
+        check_timeframe(timeframe);
     }
 
     #[test]
     fn test_check_aggregate() {
         let aggregate = 2;
         let timeframe = "day";
-        check_aggregate(&aggregate, &timeframe);
+        check_aggregate(&aggregate, timeframe);
     }
 
     #[test]
@@ -98,12 +100,12 @@ mod tests {
     #[test]
     fn test_check_currency() {
         let currency = "eur";
-        check_currency(&currency);
+        check_currency(currency);
     }
 
     #[test]
     fn test_check_token() {
         let token = "eth";
-        check_token(&token);
+        check_token(token);
     }
 }
