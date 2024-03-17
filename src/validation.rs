@@ -73,7 +73,7 @@ mod tests {
     #[test]
     fn test_check_addresses() {
         let addresses = [
-            "0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7", "0x8", "0x9", "0x10",
+            "0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7", "0x8", "0x9", "0x10", "0x11",
         ];
         check_addresses(&addresses);
     }
@@ -88,6 +88,14 @@ mod tests {
     fn test_check_aggregate() {
         let aggregate = 2;
         let timeframe = "day";
+        check_aggregate(&aggregate, timeframe);
+
+        let aggregate = 5;
+        let timeframe = "hour";
+        check_aggregate(&aggregate, timeframe);
+
+        let aggregate = 10;
+        let timeframe = "minute";
         check_aggregate(&aggregate, timeframe);
     }
 
