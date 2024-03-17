@@ -59,3 +59,51 @@ pub fn check_token(token: &str) {
         log::warn!("token not in {:?}", TOKENS)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_check_page() {
+        let page = 11;
+        check_page(&page);
+    }
+
+    #[test]
+    fn test_check_addresses() {
+        let addresses = ["0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7", "0x8", "0x9", "0x10"];
+        check_addresses(&addresses);
+    }
+
+    #[test]
+    fn test_check_timeframe() {
+        let timeframe = "week";
+        check_timeframe(&timeframe);
+    }
+
+    #[test]
+    fn test_check_aggregate() {
+        let aggregate = 2;
+        let timeframe = "day";
+        check_aggregate(&aggregate, &timeframe);
+    }
+
+    #[test]
+    fn test_check_ohlcv_limit() {
+        let limit = 1001;
+        check_ohlcv_limit(&limit);
+    }
+
+    #[test]
+    fn test_check_currency() {
+        let currency = "eur";
+        check_currency(&currency);
+    }
+
+    #[test]
+    fn test_check_token() {
+        let token = "eth";
+        check_token(&token);
+    }
+}
