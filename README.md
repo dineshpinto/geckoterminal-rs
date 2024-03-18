@@ -65,8 +65,11 @@ async fn main() {
 ```rust
 let networks = gt.networks(1).await.unwrap();
 for network in networks.data {
-    println!("{} ({}, {})", network.attributes.name, network.id,
-         network.attributes.coingecko_asset_platform_id.unwrap_or("".to_string()));
+    println!(
+        "{} ({}, {})",
+        network.attributes.name, network.id,
+        network.attributes.coingecko_asset_platform_id.unwrap_or("".to_string())
+    );
 }
 ```
 
@@ -87,9 +90,12 @@ Mantle: (mantle, mantle)
 ```rust
 let trending = gt.network_trending_pools("solana", 1).await.unwrap();
 for pool in trending.data {
-    println!("{}: ${} (24H: {}%), Vol: {}, {} ({})",
-             pool.attributes.name, pool.attributes.base_token_price_usd, pool.attributes.price_change_percentage.h24,
-            pool.attributes.volume_usd.h24, pool.attributes.address, pool.relationships.dex.data.id)
+    println!(
+        "{}: ${} (24H: {}%), Vol: {}, {} ({})",
+        pool.attributes.name, pool.attributes.base_token_price_usd,
+        pool.attributes.price_change_percentage.h24, pool.attributes.volume_usd.h24,
+        pool.attributes.address, pool.relationships.dex.data.id
+    );
 }
 ```
 
@@ -107,6 +113,7 @@ boden / SOL: $0.115666833387918 (24H: -25.42%), Vol: 4656209.62137547, 6UYbX1x8Y
 $WIF / SOL: $2.58524513809515 (24H: -7.83%), Vol: 25117725.2604335, EP2ib6dYdEeqD8MfE2ezHCxX3kP3K2eLKkirfPm5eyMx (raydium)
 ...
 ```
+
 ## Disclaimer
 
 This project is for educational purposes only. You should not construe any such
