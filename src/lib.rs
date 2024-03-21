@@ -67,8 +67,8 @@ impl GeckoTerminalAPI {
             .await;
 
         match resp {
-            Ok(resp) => match resp.error_for_status_ref() {
-                Ok(_) => Ok(resp),
+            Ok(resp) => match resp.error_for_status() {
+                Ok(r) => Ok(r),
                 Err(err) => {
                     log::error!("Error: {}", err);
                     Err(err)
@@ -79,6 +79,18 @@ impl GeckoTerminalAPI {
                 Err(err)
             }
         }
+    }
+
+    /// This function is used to format the response from the GeckoTerminalAPI.
+    ///
+    /// # Arguments
+    ///
+    /// * `resp` - The `reqwest::Response` to format.
+    async fn format_response<T: serde::de::DeserializeOwned>(
+        &self,
+        resp: reqwest::Response,
+    ) -> Result<GeckoTerminalResponse<T>, reqwest::Error> {
+        resp.json::<GeckoTerminalResponse<T>>().await
     }
 
     /// Get all supported networks along with their network ID.
@@ -93,10 +105,8 @@ impl GeckoTerminalAPI {
         check_page(&page);
         let path = "/networks".to_string();
         let params = vec![("page".to_string(), page.to_string())];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Network>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Network>>(resp).await
     }
 
     /// Get all supported DEXes along with their DEX ID.
@@ -113,10 +123,8 @@ impl GeckoTerminalAPI {
         check_page(&page);
         let path = format!("/networks/{}/dexes", network);
         let params = vec![("page".to_string(), page.to_string())];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Dex>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Dex>>(resp).await
     }
 
     /// Get all trending pools on all networks.
@@ -137,10 +145,8 @@ impl GeckoTerminalAPI {
             ("page".to_string(), page.to_string()),
             ("include".to_string(), include_str),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get all trending pools on a specific network.
@@ -163,10 +169,8 @@ impl GeckoTerminalAPI {
             ("page".to_string(), page.to_string()),
             ("include".to_string(), include_str),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get a specific pool on a specific network.
@@ -185,10 +189,8 @@ impl GeckoTerminalAPI {
         let path = format!("/networks/{}/pools/{}", network, address);
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Pool>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Pool>(resp).await
     }
 
     /// Get multiple pools on a specific network.
@@ -208,10 +210,8 @@ impl GeckoTerminalAPI {
         let path = format!("/networks/{}/pools/multi/{}", network, addresses.join(","));
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get all pools on a specific network.
@@ -234,10 +234,8 @@ impl GeckoTerminalAPI {
             ("include".to_string(), include_str),
             ("page".to_string(), page.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get top pools on a network's DeX.
@@ -261,10 +259,8 @@ impl GeckoTerminalAPI {
             ("include".to_string(), include_str),
             ("page".to_string(), page.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get new pools on a network.
@@ -286,10 +282,8 @@ impl GeckoTerminalAPI {
             ("include".to_string(), include_str),
             ("page".to_string(), page.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get new pools on all networks.
@@ -309,10 +303,8 @@ impl GeckoTerminalAPI {
             ("include".to_string(), include_str),
             ("page".to_string(), page.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Search for a pool on a networks.
@@ -338,10 +330,8 @@ impl GeckoTerminalAPI {
             ("include".to_string(), include_str),
             ("page".to_string(), page.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get current USD prices of multiple tokens on a network.
@@ -361,10 +351,8 @@ impl GeckoTerminalAPI {
             addresses.join(",")
         );
         let params = vec![];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<TokenPrice>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<TokenPrice>(resp).await
     }
 
     /// Get top pools for a token on a network.
@@ -387,10 +375,8 @@ impl GeckoTerminalAPI {
             ("include".to_string(), include_str),
             ("page".to_string(), page.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Pool>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Pool>>(resp).await
     }
 
     /// Get specific token on a network.
@@ -408,10 +394,8 @@ impl GeckoTerminalAPI {
         let path = format!("/networks/{}/tokens/{}", network, address);
         let include_str = "top_pools".to_string();
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Token>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Token>(resp).await
     }
 
     /// Get multiple tokens on a network.
@@ -430,10 +414,8 @@ impl GeckoTerminalAPI {
         let path = format!("/networks/{}/tokens/multi/{}", network, addresses.join(","));
         let include_str = "top_pools".to_string();
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Token>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Token>>(resp).await
     }
 
     /// Get token address info on a network.
@@ -448,10 +430,8 @@ impl GeckoTerminalAPI {
     ) -> Result<GeckoTerminalResponse<TokenInfo>, reqwest::Error> {
         let path = format!("/networks/{}/tokens/{}/info", network, address);
         let params = vec![];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<TokenInfo>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<TokenInfo>(resp).await
     }
 
     /// Get most recently updated 100 tokens info from all networks.
@@ -465,10 +445,8 @@ impl GeckoTerminalAPI {
         let path = "/tokens/info_recently_updated".to_string();
         let include_str = "network".to_string();
         let params = vec![("include".to_string(), include_str)];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<TokenInfo>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<TokenInfo>>(resp).await
     }
 
     /// Get trades of a pool on a network.
@@ -488,10 +466,8 @@ impl GeckoTerminalAPI {
             "trade_volume_in_usd_greater_than".to_string(),
             trade_volume_in_usd_greater_than.to_string(),
         )];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<Vec<Trade>>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<Vec<Trade>>(resp).await
     }
 
     /// Fetches the OHLCV (Open, High, Low, Close, Volume) data for a specific pool on a network.
@@ -545,10 +521,8 @@ impl GeckoTerminalAPI {
             ("currency".to_string(), currency.to_string()),
             ("token".to_string(), token.to_string()),
         ];
-        self.get(path, params)
-            .await?
-            .json::<GeckoTerminalResponse<OHLCV>>()
-            .await
+        let resp = self.get(path, params).await?;
+        self.format_response::<OHLCV>(resp).await
     }
 }
 
