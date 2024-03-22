@@ -1,7 +1,8 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::types::{
-    Dex, GeckoTerminalResponse, Network, Pool, Token, TokenInfo, TokenPrice, Trade, OHLCV,
+    dex::Dex, network::Network, ohlcv::OHLCV, pool::Pool, response::GeckoTerminalResponse,
+    simple::TokenPrice, token::Token, token_info::TokenInfo, trade::Trade,
 };
 use crate::validation::{
     check_addresses, check_aggregate, check_currency, check_ohlcv_limit, check_page,
