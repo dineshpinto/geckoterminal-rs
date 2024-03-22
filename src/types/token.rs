@@ -38,11 +38,11 @@ pub struct Relationships {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TopPools {
-    pub data: Vec<Daum>,
+    pub data: Vec<Pool>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Daum {
+pub struct Pool {
     pub id: String,
     #[serde(rename = "type")]
     pub type_field: String,

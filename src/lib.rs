@@ -528,7 +528,7 @@ impl GeckoTerminalAPI {
 
 #[cfg(test)]
 mod tests {
-    use more_asserts as ma;
+    use more_asserts::assert_gt;
 
     use super::*;
 
@@ -536,7 +536,7 @@ mod tests {
     async fn test_networks() {
         let client = GeckoTerminalAPI::new();
         let resp = client.networks(1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "network");
     }
 
@@ -544,7 +544,7 @@ mod tests {
     async fn test_network_dexes() {
         let client = GeckoTerminalAPI::new();
         let resp = client.network_dexes("eth", 1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "dex");
     }
 
@@ -552,7 +552,7 @@ mod tests {
     async fn test_trending_pools() {
         let client = GeckoTerminalAPI::new();
         let resp = client.trending_pools(1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 3);
+        assert_gt!(resp.data.len(), 3);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -560,7 +560,7 @@ mod tests {
     async fn test_network_trending_pools() {
         let client = GeckoTerminalAPI::new();
         let resp = client.network_trending_pools("eth", 1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 3);
+        assert_gt!(resp.data.len(), 3);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -599,7 +599,7 @@ mod tests {
     async fn test_network_pools() {
         let client = GeckoTerminalAPI::new();
         let resp = client.network_pools("eth", 1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -610,7 +610,7 @@ mod tests {
             .network_dex_pools("eth", "sushiswap", 1)
             .await
             .unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -618,7 +618,7 @@ mod tests {
     async fn test_network_new_pools() {
         let client = GeckoTerminalAPI::new();
         let resp = client.network_new_pools("eth", 1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -626,7 +626,7 @@ mod tests {
     async fn test_new_pools() {
         let client = GeckoTerminalAPI::new();
         let resp = client.new_pools(1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -634,7 +634,7 @@ mod tests {
     async fn test_search_network_pool() {
         let client = GeckoTerminalAPI::new();
         let resp = client.search_network_pool("ETH", "eth", 1).await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -661,7 +661,7 @@ mod tests {
             .network_token_pools("eth", "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", 1)
             .await
             .unwrap();
-        ma::assert_gt!(resp.data.len(), 5);
+        assert_gt!(resp.data.len(), 5);
         assert_eq!(resp.data[0].type_field, "pool");
     }
 
@@ -714,7 +714,7 @@ mod tests {
     async fn test_token_info_recently_updated() {
         let client = GeckoTerminalAPI::new();
         let resp = client.token_info_recently_updated().await.unwrap();
-        ma::assert_gt!(resp.data.len(), 10);
+        assert_gt!(resp.data.len(), 10);
         assert_eq!(resp.data[0].type_field, "token");
     }
 
@@ -725,7 +725,7 @@ mod tests {
             .network_pool_trades("eth", "0x60594a405d53811d3bc4766596efd80fd545a270", 1000.0)
             .await
             .unwrap();
-        ma::assert_gt!(resp.data.len(), 100);
+        assert_gt!(resp.data.len(), 100);
         assert_eq!(resp.data[0].type_field, "trade");
     }
 
