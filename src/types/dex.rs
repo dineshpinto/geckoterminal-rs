@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct Attributes {
     pub name: String,
 }
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Dex {
     pub id: String,

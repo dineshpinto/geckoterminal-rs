@@ -39,7 +39,7 @@ impl GeckoTerminalAPI {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///    let client = GeckoTerminalAPI::new();
+    ///    let gt = GeckoTerminalAPI::new();
     ///    Ok(())
     /// }
     /// ```
@@ -98,7 +98,7 @@ impl GeckoTerminalAPI {
     ///
     /// # Arguments
     ///
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn networks(
         &self,
         page: i32,
@@ -115,7 +115,7 @@ impl GeckoTerminalAPI {
     /// # Arguments
     ///
     /// * `network` - The network ID of the network to get DEXes for.
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn network_dexes(
         &self,
         network: &str,
@@ -132,9 +132,7 @@ impl GeckoTerminalAPI {
     ///
     /// # Arguments
     ///
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex, network (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn trending_pools(
         &self,
         page: i32,
@@ -155,9 +153,7 @@ impl GeckoTerminalAPI {
     /// # Arguments
     ///
     /// * `network` - The network ID of the network to get trending pools for.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn network_trending_pools(
         &self,
         network: &str,
@@ -180,8 +176,6 @@ impl GeckoTerminalAPI {
     ///
     /// * `network` - The network ID of the network to get the pool for.
     /// * `address` - The address of the pool to get.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex (default all).
     pub async fn network_pool_address(
         &self,
         network: &str,
@@ -200,8 +194,6 @@ impl GeckoTerminalAPI {
     ///
     /// * `network` - The network ID of the network to get the pools for.
     /// * `addresses` - The addresses of the pools to get.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex (default all).
     pub async fn network_pools_multi_address(
         &self,
         network: &str,
@@ -220,9 +212,7 @@ impl GeckoTerminalAPI {
     /// # Arguments
     ///
     /// * `network` - The network ID of the network to get the pools for.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn network_pools(
         &self,
         network: &str,
@@ -244,9 +234,7 @@ impl GeckoTerminalAPI {
     /// # Arguments
     /// * `network` - The network ID of the network to get the pools for.
     /// * `dex` - The DeX ID of the DeX to get the pools for.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn network_dex_pools(
         &self,
         network: &str,
@@ -268,9 +256,7 @@ impl GeckoTerminalAPI {
     ///
     /// # Arguments
     /// * `network` - The network ID of the network to get the pools for.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn network_new_pools(
         &self,
         network: &str,
@@ -290,9 +276,7 @@ impl GeckoTerminalAPI {
     /// Get new pools on all networks.
     ///
     /// # Arguments
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex, network (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn new_pools(
         &self,
         page: i32,
@@ -313,9 +297,7 @@ impl GeckoTerminalAPI {
     /// # Arguments
     /// * `query` - The query string to search for, can be pool address, token address, or token symbol.
     /// * `network` - The network ID of the network to search on.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex, network (default all).
-    /// * `page` - The page number of the results to return. Default is 1.
+    /// * `page` - The page number of the results to return.
     pub async fn search_network_pool(
         &self,
         query: &str,
@@ -361,8 +343,6 @@ impl GeckoTerminalAPI {
     /// # Arguments
     /// * `network` - The network ID of the network to get the token prices for.
     /// * `token_address` - The address of the token to get the pools for.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: base_token, quote_token, dex (default all).
     pub async fn network_token_pools(
         &self,
         network: &str,
@@ -385,8 +365,6 @@ impl GeckoTerminalAPI {
     /// # Arguments
     /// * `network` - The network ID of the network to get the token for.
     /// * `address` - The address of the token to get.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: top_pools (default all).
     pub async fn network_token(
         &self,
         network: &str,
@@ -404,8 +382,6 @@ impl GeckoTerminalAPI {
     /// # Arguments
     /// * `network` - The network ID of the network to get the tokens for.
     /// * `addresses` - The addresses of the tokens to get.
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: top_pools (default all).
     pub async fn network_token_multi_address(
         &self,
         network: &str,
@@ -436,10 +412,6 @@ impl GeckoTerminalAPI {
     }
 
     /// Get most recently updated 100 tokens info from all networks.
-    ///
-    /// # Arguments
-    /// * `include` - List of related resources to include in response. Available
-    /// resources are: network (default all).
     pub async fn token_info_recently_updated(
         &self,
     ) -> Result<GeckoTerminalResponse<Vec<TokenInfo>>, reqwest::Error> {
@@ -748,5 +720,12 @@ mod tests {
             .unwrap();
         assert_eq!(resp.data.type_field, "ohlcv_request_response");
         assert_eq!(resp.data.attributes.ohlcv_list.len(), 100);
+    }
+
+    #[tokio::test]
+    async fn test_invalid_params() {
+        let client = GeckoTerminalAPI::new();
+        let resp = client.networks(-1).await;
+        assert!(resp.is_err());
     }
 }
