@@ -1,5 +1,5 @@
 pub const MAX_PAGE: i32 = 10;
-pub const MAX_ADDRESSES: i32 = 30;
+pub const MAX_ADDRESSES: usize = 30;
 
 pub const TIMEFRAMES: [&str; 3] = ["day", "hour", "minute"];
 pub const DAY_AGGREGATES: [i32; 1] = [1];

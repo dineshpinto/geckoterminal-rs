@@ -30,7 +30,7 @@ impl Default for GeckoTerminalAPI {
 }
 
 impl GeckoTerminalAPI {
-    /// Create a new GeckoTerminalAPI client.
+    /// Create a new `GeckoTerminalAPI` client.
     ///
     /// # Examples
     ///
@@ -43,11 +43,12 @@ impl GeckoTerminalAPI {
     ///    Ok(())
     /// }
     /// ```
+    #[must_use]
     pub fn new() -> GeckoTerminalAPI {
-        Default::default()
+        GeckoTerminalAPI::default()
     }
 
-    /// Make a GET request to the GeckoTerminalAPI.
+    /// Make a GET request to the `GeckoTerminalAPI`.
     ///
     /// # Arguments
     ///
@@ -82,7 +83,7 @@ impl GeckoTerminalAPI {
         }
     }
 
-    /// This function is used to format the response from the GeckoTerminalAPI.
+    /// This function is used to format the response from the `GeckoTerminalAPI`.
     ///
     /// # Arguments
     ///
@@ -122,7 +123,7 @@ impl GeckoTerminalAPI {
         page: i32,
     ) -> Result<GeckoTerminalResponse<Vec<Dex>>, reqwest::Error> {
         check_page(&page);
-        let path = format!("/networks/{}/dexes", network);
+        let path = format!("/networks/{network}/dexes");
         let params = vec![("page".to_string(), page.to_string())];
         let resp = self.get(path, params).await?;
         self.format_response::<Vec<Dex>>(resp).await
@@ -160,7 +161,7 @@ impl GeckoTerminalAPI {
         page: i32,
     ) -> Result<GeckoTerminalResponse<Vec<Pool>>, reqwest::Error> {
         check_page(&page);
-        let path = format!("/networks/{}/trending_pools", network);
+        let path = format!("/networks/{network}/trending_pools");
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![
             ("page".to_string(), page.to_string()),
@@ -181,7 +182,7 @@ impl GeckoTerminalAPI {
         network: &str,
         address: &str,
     ) -> Result<GeckoTerminalResponse<Pool>, reqwest::Error> {
-        let path = format!("/networks/{}/pools/{}", network, address);
+        let path = format!("/networks/{network}/pools/{address}");
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![("include".to_string(), include_str)];
         let resp = self.get(path, params).await?;
@@ -200,7 +201,7 @@ impl GeckoTerminalAPI {
         addresses: Vec<&str>,
     ) -> Result<GeckoTerminalResponse<Vec<Pool>>, reqwest::Error> {
         check_addresses(&addresses);
-        let path = format!("/networks/{}/pools/multi/{}", network, addresses.join(","));
+        let path = format!("/networks/{network}/pools/multi/{}", addresses.join(","));
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![("include".to_string(), include_str)];
         let resp = self.get(path, params).await?;
@@ -219,7 +220,7 @@ impl GeckoTerminalAPI {
         page: i32,
     ) -> Result<GeckoTerminalResponse<Vec<Pool>>, reqwest::Error> {
         check_page(&page);
-        let path = format!("/networks/{}/pools", network);
+        let path = format!("/networks/{network}/pools");
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![
             ("include".to_string(), include_str),
@@ -242,7 +243,7 @@ impl GeckoTerminalAPI {
         page: i32,
     ) -> Result<GeckoTerminalResponse<Vec<Pool>>, reqwest::Error> {
         check_page(&page);
-        let path = format!("/networks/{}/dexes/{}/pools", network, dex);
+        let path = format!("/networks/{network}/dexes/{dex}/pools");
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![
             ("include".to_string(), include_str),
@@ -263,7 +264,7 @@ impl GeckoTerminalAPI {
         page: i32,
     ) -> Result<GeckoTerminalResponse<Vec<Pool>>, reqwest::Error> {
         check_page(&page);
-        let path = format!("/networks/{}/new_pools", network);
+        let path = format!("/networks/{network}/new_pools");
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![
             ("include".to_string(), include_str),
@@ -329,8 +330,7 @@ impl GeckoTerminalAPI {
     ) -> Result<GeckoTerminalResponse<TokenPrice>, reqwest::Error> {
         check_addresses(&addresses);
         let path = format!(
-            "/simple/networks/{}/token_price/{}",
-            network,
+            "/simple/networks/{network}/token_price/{}",
             addresses.join(",")
         );
         let params = vec![];
@@ -350,7 +350,7 @@ impl GeckoTerminalAPI {
         page: i32,
     ) -> Result<GeckoTerminalResponse<Vec<Pool>>, reqwest::Error> {
         check_page(&page);
-        let path = format!("/networks/{}/tokens/{}/pools", network, token_address);
+        let path = format!("/networks/{network}/tokens/{token_address}/pools");
         let include_str = "base_token,quote_token,dex".to_string();
         let params = vec![
             ("include".to_string(), include_str),
@@ -370,7 +370,7 @@ impl GeckoTerminalAPI {
         network: &str,
         address: &str,
     ) -> Result<GeckoTerminalResponse<Token>, reqwest::Error> {
-        let path = format!("/networks/{}/tokens/{}", network, address);
+        let path = format!("/networks/{network}/tokens/{address}");
         let include_str = "top_pools".to_string();
         let params = vec![("include".to_string(), include_str)];
         let resp = self.get(path, params).await?;
@@ -388,7 +388,7 @@ impl GeckoTerminalAPI {
         addresses: Vec<&str>,
     ) -> Result<GeckoTerminalResponse<Vec<Token>>, reqwest::Error> {
         check_addresses(&addresses);
-        let path = format!("/networks/{}/tokens/multi/{}", network, addresses.join(","));
+        let path = format!("/networks/{network}/tokens/multi/{}", addresses.join(","));
         let include_str = "top_pools".to_string();
         let params = vec![("include".to_string(), include_str)];
         let resp = self.get(path, params).await?;
@@ -405,7 +405,7 @@ impl GeckoTerminalAPI {
         network: &str,
         address: &str,
     ) -> Result<GeckoTerminalResponse<TokenInfo>, reqwest::Error> {
-        let path = format!("/networks/{}/tokens/{}/info", network, address);
+        let path = format!("/networks/{network}/tokens/{address}/info");
         let params = vec![];
         let resp = self.get(path, params).await?;
         self.format_response::<TokenInfo>(resp).await
@@ -434,7 +434,7 @@ impl GeckoTerminalAPI {
         pool_address: &str,
         trade_volume_in_usd_greater_than: f64,
     ) -> Result<GeckoTerminalResponse<Vec<Trade>>, reqwest::Error> {
-        let path = format!("/networks/{}/pools/{}/trades", network, pool_address);
+        let path = format!("/networks/{network}/pools/{pool_address}/trades");
         let params = vec![(
             "trade_volume_in_usd_greater_than".to_string(),
             trade_volume_in_usd_greater_than.to_string(),
@@ -483,10 +483,7 @@ impl GeckoTerminalAPI {
         check_currency(currency);
         check_token(token);
 
-        let path = format!(
-            "/networks/{}/pools/{}/ohlcv/{}",
-            network, pool_address, timeframe
-        );
+        let path = format!("/networks/{network}/pools/{pool_address}/ohlcv/{timeframe}");
         let params = vec![
             ("aggregate".to_string(), aggregate.to_string()),
             ("before_timestamp".to_string(), before_timestamp.to_string()),
@@ -548,7 +545,7 @@ mod tests {
             resp.data.attributes.address,
             "0x60594a405d53811d3bc4766596efd80fd545a270"
         );
-        assert_eq!(resp.data.type_field, "pool")
+        assert_eq!(resp.data.type_field, "pool");
     }
 
     #[tokio::test]
@@ -649,7 +646,7 @@ mod tests {
             resp.data.attributes.address,
             "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         );
-        assert_eq!(resp.data.type_field, "token")
+        assert_eq!(resp.data.type_field, "token");
     }
 
     #[tokio::test]
@@ -680,7 +677,7 @@ mod tests {
             resp.data.attributes.address,
             "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         );
-        assert_eq!(resp.data.type_field, "token")
+        assert_eq!(resp.data.type_field, "token");
     }
 
     #[tokio::test]
