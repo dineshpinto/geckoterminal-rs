@@ -47,11 +47,11 @@ async fn main() {
     let gt = GeckoTerminalAPI::new();
 
     // Get a list of supported networks
-    let networks = gt.networks(1).await.unwrap();
+    let networks = gt.networks(None).await.unwrap();
     println!("{:?}", networks);
 
     // Query trending pools on a network
-    let pools = gt.network_trending_pools("solana", 1).await.unwrap();
+    let pools = gt.network_trending_pools("solana", None).await.unwrap();
     println!("{:?}", pools);
 
     // and many more...
@@ -63,7 +63,7 @@ async fn main() {
 ### Get a list of supported networks
 
 ```rust
-let networks = gt.networks(1).await.unwrap();
+let networks = gt.networks(None).await.unwrap();
 for network in networks.data {
     println!(
         "{} ({}, {})",
@@ -88,7 +88,7 @@ Mantle: (mantle, mantle)
 ### Get list of trending pools on a network
 
 ```rust
-let trending = gt.network_trending_pools("solana", 1).await.unwrap();
+let trending = gt.network_trending_pools("solana", None).await.unwrap();
 for pool in trending.data {
     println!(
         "{}: ${} (24H: {}%), Vol: {}, {} ({})",
