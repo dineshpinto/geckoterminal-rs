@@ -114,6 +114,31 @@ $WIF / SOL: $2.58524513809515 (24H: -7.83%), Vol: 25117725.2604335, EP2ib6dYdEeq
 ...
 ```
 
+## Custom configuration
+
+If you want to customize the client config (such as adding a proxy etc.), simply initialize
+`GeckoTerminalAPI` with a valid [reqwest Client](https://github.com/seanmonstar/reqwest).
+
+```rust
+use geckoterminal_rs::GeckoTerminalAPI;
+use reqwest::Client;
+
+#[tokio::main]
+async fn main() {
+    // Create a client with your custom configuration
+    let client = Client::builder()
+        .proxy(reqwest::Proxy::all("http://localhost:8080").unwrap())
+        .build()
+        .unwrap();
+
+    let gt = GeckoTerminalAPI { client, ..Default::default() };
+
+    // Get a list of supported networks
+    let networks = gt.networks(None).await.unwrap();
+    println!("{:?}", networks);
+}
+```
+
 ## Disclaimer
 
 This project is for educational purposes only. You should not construe any such
