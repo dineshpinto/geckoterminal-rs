@@ -1,6 +1,6 @@
 use crate::limits::{
-    CURRENCIES, DAY_AGGREGATES, HOUR_AGGREGATES, MAX_ADDRESSES, MAX_PAGE, MINUTE_AGGREGATES,
-    OHLCV_LIMIT, TIMEFRAMES, TOKENS,
+    MAX_ADDRESSES, MAX_PAGE, OHLCV_LIMIT, VALID_CURRENCIES, VALID_DAY_AGGREGATES,
+    VALID_HOUR_AGGREGATES, VALID_MINUTE_AGGREGATES, VALID_TIMEFRAMES, VALID_TOKENS,
 };
 
 pub fn check_page(page: &i32) {
@@ -16,26 +16,26 @@ pub fn check_addresses(addresses: &[&str]) {
 }
 
 pub fn check_timeframe(timeframe: &str) {
-    if !TIMEFRAMES.contains(&timeframe) {
-        log::warn!("timeframe not in {:?}", TIMEFRAMES);
+    if !VALID_TIMEFRAMES.contains(&timeframe) {
+        log::warn!("timeframe not in {:?}", VALID_TIMEFRAMES);
     }
 }
 
 pub fn check_aggregate(aggregate: &i32, timeframe: &str) {
     match timeframe {
         "day" => {
-            if !DAY_AGGREGATES.contains(aggregate) {
-                log::warn!("aggregate not in {:?}", DAY_AGGREGATES);
+            if !VALID_DAY_AGGREGATES.contains(aggregate) {
+                log::warn!("aggregate not in {:?}", VALID_DAY_AGGREGATES);
             }
         }
         "hour" => {
-            if !HOUR_AGGREGATES.contains(aggregate) {
-                log::warn!("aggregate not in {:?}", HOUR_AGGREGATES);
+            if !VALID_HOUR_AGGREGATES.contains(aggregate) {
+                log::warn!("aggregate not in {:?}", VALID_HOUR_AGGREGATES);
             }
         }
         "minute" => {
-            if !MINUTE_AGGREGATES.contains(aggregate) {
-                log::warn!("aggregate not in {:?}", MINUTE_AGGREGATES);
+            if !VALID_MINUTE_AGGREGATES.contains(aggregate) {
+                log::warn!("aggregate not in {:?}", VALID_MINUTE_AGGREGATES);
             }
         }
         _ => log::error!("invalid timeframe {}", timeframe),
@@ -49,14 +49,14 @@ pub fn check_ohlcv_limit(limit: &i32) {
 }
 
 pub fn check_currency(currency: &str) {
-    if !CURRENCIES.contains(&currency) {
-        log::warn!("currency not in {:?}", CURRENCIES);
+    if !VALID_CURRENCIES.contains(&currency) {
+        log::warn!("currency not in {:?}", VALID_CURRENCIES);
     }
 }
 
 pub fn check_token(token: &str) {
-    if !TOKENS.contains(&token) {
-        log::warn!("token not in {:?}", TOKENS);
+    if !VALID_TOKENS.contains(&token) {
+        log::warn!("token not in {:?}", VALID_TOKENS);
     }
 }
 
